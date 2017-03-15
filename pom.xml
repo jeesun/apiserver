@@ -5,7 +5,7 @@
 
 	<groupId>com.simon</groupId>
 	<artifactId>apiserver</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
 	<name>apiserver</name>
