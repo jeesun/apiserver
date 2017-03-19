@@ -39,7 +39,7 @@ public class CourseController {
 
         List<CourseDetail> courseDetails = new ArrayList<>();
         List<Course> courses = courseRepository.findAll();
-        for(int i=0; i<courses.size(); i++){
+        /*for(int i=0; i<courses.size(); i++){
             CourseDetail courseDetail = new CourseDetail();
             courseDetail.setCourse(courses.get(i));
             List<ChapterDetail> chapterDetails = new ArrayList<>();
@@ -47,7 +47,7 @@ public class CourseController {
             convert(chapterDetails, chapters);
             courseDetail.setChapterDetails(chapterDetails);
             courseDetails.add(courseDetail);
-        }
+        }*/
 
         resultMsg.setStatus(ResultMsg.Status.OK);
         resultMsg.setData(courseDetails);
