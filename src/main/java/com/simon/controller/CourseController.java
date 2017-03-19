@@ -37,7 +37,7 @@ public class CourseController {
     public ResultMsg get(){
         ResultMsg resultMsg = new ResultMsg();
 
-        List<CourseDetail> courseDetails = new ArrayList<>();
+//        List<CourseDetail> courseDetails = new ArrayList<>();
         List<Course> courses = courseRepository.findAll();
         /*for(int i=0; i<courses.size(); i++){
             CourseDetail courseDetail = new CourseDetail();
@@ -50,8 +50,8 @@ public class CourseController {
         }*/
 
         resultMsg.setStatus(ResultMsg.Status.OK);
-        resultMsg.setData(courseDetails);
-
+//        resultMsg.setData(courseDetails);
+        resultMsg.setData(courses);
         return resultMsg;
     }
 
