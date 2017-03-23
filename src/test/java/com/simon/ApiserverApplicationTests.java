@@ -1,9 +1,7 @@
 package com.simon;
 
-import com.simon.domain.ChoiceItem;
-import com.simon.domain.ChoicePaper;
-import com.simon.domain.MultiChoice;
-import com.simon.domain.SinglePaper;
+import com.simon.domain.*;
+import com.simon.repository.AppUserRepository;
 import com.simon.repository.MultipleChoiceRepository;
 import com.simon.repository.SinglePaperRepository;
 import org.junit.Test;
@@ -26,6 +24,9 @@ public class ApiserverApplicationTests {
 
 	@Autowired
 	private SinglePaperRepository singlePaperRepository;
+
+	@Autowired
+	private AppUserRepository appUserRepository;
 
 	private final static Logger log = LoggerFactory.getLogger(ApiserverApplicationTests.class);
 
@@ -67,5 +68,14 @@ public class ApiserverApplicationTests {
 			log.error(singlePaper.getId()+"==="+singlePaper.getPaperName());
 		}
 
+	}*/
+
+	/*@Test
+	public void insertAppUser(){
+		AppUser appUser = new AppUser();
+		appUser.setPhone("18860902711");
+		appUser.setUsername("qbank_2711");
+		appUser = appUserRepository.save(appUser);
+		System.out.println(appUser.getId());
 	}*/
 }

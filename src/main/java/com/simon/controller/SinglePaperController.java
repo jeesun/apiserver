@@ -2,6 +2,7 @@ package com.simon.controller;
 
 import com.simon.domain.PaperRecord;
 import com.simon.domain.ResultMsg;
+import com.simon.domain.SingleChoice;
 import com.simon.domain.SinglePaper;
 import com.simon.repository.AppUserRepository;
 import com.simon.repository.PaperRecordRepository;
@@ -120,6 +121,8 @@ public class SinglePaperController {
                 }
             }
             if(!flag){
+                List<SingleChoice> singleChoices = singleChoiceRepository.findByPaperId(singlePaper.getId());
+                singlePaper.setChoices(singleChoices);
                 resultMsg.setData(singlePaper);
                 break;
             }
