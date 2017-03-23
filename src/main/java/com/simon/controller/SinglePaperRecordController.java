@@ -6,6 +6,7 @@ import com.simon.domain.ResultMsg;
 import com.simon.domain.SingleRecord;
 import com.simon.repository.AppUserRepository;
 import com.simon.repository.PaperRecordRepository;
+import com.simon.repository.SingleChoiceRepository;
 import com.simon.repository.SingleRecordRepository;
 import com.simon.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class SinglePaperRecordController {
     @Autowired
     private SingleRecordRepository singleRecordRepository;
 
+    @Autowired
+    private SingleChoiceRepository singleChoiceRepository;
+
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResultMsg post(@RequestParam String access_token,
                           @RequestParam String paperId,
@@ -51,6 +55,7 @@ public class SinglePaperRecordController {
         for(int i=0; i<singleRecordList.size(); i++){
             SingleRecord singleRecord = singleRecordList.get(i);
             singleRecord.setUserId(userId);
+            singleRecord.setSingleChoice(singleChoiceRepository.findOne(singleRecord.getSingleChoiceId()));
             singleRecord.setPaperRecordId(paperRecord.getId());
             singleRecordRepository.save(singleRecord);
         }
