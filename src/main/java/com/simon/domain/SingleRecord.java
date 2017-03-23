@@ -1,47 +1,78 @@
 package com.simon.domain;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Created by simon on 2017/3/4.
+ * Created by simon on 2017/3/23.
  */
-//用户单选题选择的选项记录（单条题目）
+@Document(collection = "qb_single_record")
 public class SingleRecord {
+    private String paperId;
+    private String singleChoiceId;
     @DBRef
-    private MultiChoice multiChoice;
-    private Integer[] order;
-    private Integer choiceIndex;
-    private boolean result;
+    private SingleChoice singleChoice;
+    private Integer index;
+    private Integer userChose;
+    private Boolean result;
+    private String userId;
 
-    public MultiChoice getMultiChoice() {
-        return multiChoice;
+    public SingleRecord() {
     }
 
-    public void setMultiChoice(MultiChoice multiChoice) {
-        this.multiChoice = multiChoice;
+    public String getPaperId() {
+        return paperId;
     }
 
-    public Integer[] getOrder() {
-        return order;
+    public void setPaperId(String paperId) {
+        this.paperId = paperId;
     }
 
-    public void setOrder(Integer[] order) {
-        this.order = order;
+    public String getSingleChoiceId() {
+        return singleChoiceId;
     }
 
-    public Integer getChoiceIndex() {
-        return choiceIndex;
+    public void setSingleChoiceId(String singleChoiceId) {
+        this.singleChoiceId = singleChoiceId;
     }
 
-    public void setChoiceIndex(Integer choiceIndex) {
-        this.choiceIndex = choiceIndex;
+    public SingleChoice getSingleChoice() {
+        return singleChoice;
     }
 
-    public boolean getResult() {
+    public void setSingleChoice(SingleChoice singleChoice) {
+        this.singleChoice = singleChoice;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
+
+    public Integer getUserChose() {
+        return userChose;
+    }
+
+    public void setUserChose(Integer userChose) {
+        this.userChose = userChose;
+    }
+
+    public Boolean getResult() {
         return result;
     }
 
-    public void setResult(boolean result) {
+    public void setResult(Boolean result) {
         this.result = result;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

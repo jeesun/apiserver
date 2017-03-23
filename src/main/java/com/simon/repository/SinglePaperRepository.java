@@ -14,5 +14,6 @@ public interface SinglePaperRepository extends MongoRepository<SinglePaper, Stri
     List<SinglePaper> findByBelongInfoCourseId(String courseId, Pageable pageable);
     List<SinglePaper> findByBelongInfoCourseIdAndBelongInfoChapterId(String courseId, String chapterId);
     List<SinglePaper> findByBelongInfoCourseIdAndBelongInfoChapterId(String courseId, String chapterId, Pageable pageable);
+    List<SinglePaper> findByBelongInfoCourseIdAndBelongInfoChapterIdAndBelongInfoSectionId(String courseId, String chapterId, String sectionId);
     List<SinglePaper> findByBelongInfoCourseIdAndBelongInfoChapterIdAndBelongInfoSectionId(String courseId, String chapterId, String sectionId, Pageable pageable);
 }

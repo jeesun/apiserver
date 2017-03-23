@@ -33,6 +33,10 @@ public class TokenUtil {
         return appUserRepository.findByPhone(getPhoneByAccessToken(jdbcTemplate,access_token));
     }
 
+    public String getAppUserIdByAccessToken(AppUserRepository appUserRepository, JdbcTemplate jdbcTemplate, String access_token){
+        return appUserRepository.findByPhone(getPhoneByAccessToken(jdbcTemplate,access_token)).getId();
+    }
+
     public String getPhoneByAccessToken(JdbcTemplate jdbcTemplate, String access_token){
         //PostgreSQL
         /*return jdbcTemplate.queryForObject("SELECT user_name FROM oauth_access_token" +
