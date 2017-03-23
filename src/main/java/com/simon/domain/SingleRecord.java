@@ -16,6 +16,7 @@ public class SingleRecord {
     private Integer userChose;
     private Boolean result;
     private String userId;
+    private String paperRecordId;
 
     public SingleRecord() {
     }
@@ -74,5 +75,13 @@ public class SingleRecord {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getPaperRecordId() {
+        return paperRecordId;
+    }
+
+    public void setPaperRecordId(String paperRecordId) {
+        this.paperRecordId = paperRecordId;
     }
 }

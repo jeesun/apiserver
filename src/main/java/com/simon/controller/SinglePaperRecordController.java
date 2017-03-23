@@ -41,18 +41,19 @@ public class SinglePaperRecordController {
 
         List<SingleRecord> singleRecordList = JSON.parseArray(records, SingleRecord.class);
 
-        for(int i=0; i<singleRecordList.size(); i++){
-            SingleRecord singleRecord = singleRecordList.get(i);
-            singleRecord.setUserId(userId);
-            singleRecordRepository.save(singleRecord);
-        }
-
         PaperRecord paperRecord = new PaperRecord();
         paperRecord.setDoTime(0);
         paperRecord.setPaperId(paperId);
         paperRecord.setPaperType(0);//单选题0，多选题1，填空题2，综合题3
         paperRecord.setUserId(userId);
-        paperRecordRepository.save(paperRecord);
+        paperRecord = paperRecordRepository.save(paperRecord);
+
+        for(int i=0; i<singleRecordList.size(); i++){
+            SingleRecord singleRecord = singleRecordList.get(i);
+            singleRecord.setUserId(userId);
+            singleRecord.setPaperRecordId(paperRecord.getId());
+            singleRecordRepository.save(singleRecord);
+        }
 
         resultMsg.setStatus(201);
         resultMsg.setMessage("提交成功");
