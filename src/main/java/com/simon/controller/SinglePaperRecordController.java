@@ -10,10 +10,7 @@ import com.simon.repository.SingleRecordRepository;
 import com.simon.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,7 +35,7 @@ public class SinglePaperRecordController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResultMsg post(@RequestParam String access_token,
                           @RequestParam String paperId,
-                          @RequestParam String records){
+                          @RequestBody String records){
         ResultMsg resultMsg = new ResultMsg();
         String userId = TokenUtil.getInstance().getAppUserIdByAccessToken(appUserRepository, jdbcTemplate, access_token);
 
