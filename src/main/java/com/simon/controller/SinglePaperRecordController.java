@@ -42,7 +42,9 @@ public class SinglePaperRecordController {
         List<SingleRecord> singleRecordList = JSON.parseArray(records, SingleRecord.class);
 
         for(int i=0; i<singleRecordList.size(); i++){
-            singleRecordRepository.save(singleRecordList.get(i));
+            SingleRecord singleRecord = singleRecordList.get(i);
+            singleRecord.setUserId(userId);
+            singleRecordRepository.save(singleRecord);
         }
 
         PaperRecord paperRecord = new PaperRecord();
