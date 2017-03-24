@@ -1,5 +1,6 @@
 package com.simon.domain;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,6 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document(collection = "qb_single_record")
 public class SingleRecord {
+    @Id
+    private String id;
     private String paperId;
     private String singleChoiceId;
     @DBRef
@@ -19,6 +22,14 @@ public class SingleRecord {
     private String paperRecordId;
 
     public SingleRecord() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getPaperId() {

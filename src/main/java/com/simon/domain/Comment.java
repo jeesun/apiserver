@@ -14,7 +14,7 @@ public class Comment {
 
     private String questionId;
 
-    private int questionType;
+    private int questionType;//0单选题，1多选题，2填空题
 
     private String content;
 

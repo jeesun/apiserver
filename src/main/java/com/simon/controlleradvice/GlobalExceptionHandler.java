@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
                                       DemoException e) throws Exception{
         ResultMsg resultMsg = new ResultMsg();
         resultMsg.setStatus(404);
-        resultMsg.setData("not found");
+        resultMsg.setMessage("not found");
         return resultMsg;
     }
 
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
                                NoCommmentException e) throws Exception{
         ResultMsg resultMsg = new ResultMsg();
         resultMsg.setStatus(404);
-        resultMsg.setData(e.getMessage());
+        resultMsg.setMessage(e.getMessage());
         return resultMsg;
     }
 }
