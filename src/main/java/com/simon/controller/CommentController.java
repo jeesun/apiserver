@@ -124,6 +124,7 @@ public class CommentController {
         reply.setReplyId(replyId);
         reply.setFromUserId(currentUser.getId());
         reply.setFromUser(currentUser);
+        reply.setLastEditTime(System.currentTimeMillis());
 
         if(replyType== ReplyType.COMMENT){
             Comment comment = commentRepository.findOne(replyId);

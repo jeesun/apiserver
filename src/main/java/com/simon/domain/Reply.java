@@ -18,7 +18,7 @@ public class Reply implements Comparable {
     private String replyId;
 
     //表示回复的类型，因为回复可以是针对评论的回复(comment)，也可以是针对回复的回复(reply)， 通过这个字段来区分两种情景。
-    private Integer replyType;
+    private Integer replyType;//0针对评论的回复，1针对回复的回复
 
     private String content;
 
