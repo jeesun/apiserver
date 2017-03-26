@@ -24,6 +24,8 @@ public class FillBlank {
 
     private Long lastEditTime;
 
+    private String paperId;
+
     public FillBlank() {
     }
 
@@ -74,5 +76,13 @@ public class FillBlank {
 
     public void setLastEditTime(Long lastEditTime) {
         this.lastEditTime = lastEditTime;
+    }
+
+    public String getPaperId() {
+        return paperId;
+    }
+
+    public void setPaperId(String paperId) {
+        this.paperId = paperId;
     }
 }

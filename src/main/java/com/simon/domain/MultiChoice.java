@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by simon on 2017/3/4.
@@ -16,7 +17,7 @@ public class MultiChoice {
 
     private String question;
 
-    private ArrayList<ChoiceItem> choiceItems;
+    private List<ChoiceItem> choiceItems;
 
     private Integer answerCount;
 
@@ -42,11 +43,11 @@ public class MultiChoice {
         this.question = question;
     }
 
-    public ArrayList<ChoiceItem> getChoiceItems() {
+    public List<ChoiceItem> getChoiceItems() {
         return choiceItems;
     }
 
-    public void setChoiceItems(ArrayList<ChoiceItem> choiceItems) {
+    public void setChoiceItems(List<ChoiceItem> choiceItems) {
         this.choiceItems = choiceItems;
     }
 
