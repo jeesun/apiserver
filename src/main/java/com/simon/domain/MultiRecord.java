@@ -17,7 +17,7 @@ public class MultiRecord {
     @DBRef
     private MultiChoice multiChoice;
     private Integer index;
-    private Integer[] userChose;
+    private int[] userChose;
     private Boolean result;
     private String userId;
     private String paperRecordId;
@@ -62,11 +62,11 @@ public class MultiRecord {
         this.index = index;
     }
 
-    public Integer[] getUserChose() {
+    public int[] getUserChose() {
         return userChose;
     }
 
-    public void setUserChose(Integer[] userChose) {
+    public void setUserChose(int[] userChose) {
         this.userChose = userChose;
     }
 
