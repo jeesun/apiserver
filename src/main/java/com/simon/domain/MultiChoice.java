@@ -90,6 +90,9 @@ public class MultiChoice {
                 ", question='" + question + '\'' +
                 ", choiceItems=" + choiceItems +
                 ", answerCount=" + answerCount +
+                ", lastEditTime=" + lastEditTime +
+                ", analysis='" + analysis + '\'' +
+                ", paperId='" + paperId + '\'' +
                 '}';
     }
 }
