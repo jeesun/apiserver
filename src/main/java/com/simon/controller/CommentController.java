@@ -53,6 +53,7 @@ public class CommentController {
         comment.setContent(content);
         comment.setUserId(commentUser.getId());
         comment.setCommentUser(commentUser);
+        comment.setLastEditTime(System.currentTimeMillis());
         comment = commentRepository.insert(comment);
 
         ResultMsg resultMsg = new ResultMsg();
