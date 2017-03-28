@@ -57,7 +57,8 @@ public class CommentController {
         comment = commentRepository.insert(comment);
 
         ResultMsg resultMsg = new ResultMsg();
-        resultMsg.setStatus(ResultMsg.Status.OK);
+        resultMsg.setStatus(201);
+        resultMsg.setMessage("评论成功！");
         resultMsg.setData(comment);
         return resultMsg;
     }
@@ -140,7 +141,8 @@ public class CommentController {
         }
         reply = replyRepository.insert(reply);
 
-        resultMsg.setStatus(ResultMsg.Status.OK);
+        resultMsg.setStatus(201);
+        resultMsg.setMessage("回复成功！");
         resultMsg.setData(reply);
 
         return resultMsg;
