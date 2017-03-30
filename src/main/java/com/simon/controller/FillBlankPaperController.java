@@ -52,7 +52,7 @@ public class FillBlankPaperController {
             boolean flag = false;//试卷没有被做过
             FillBlankPaper fillBlankPaper = fillBlankPaperList.get(i);
             for(int j=0; j<paperRecordList.size(); j++){
-                if(fillBlankPaper.getId().equals(paperRecordList.get(j).getId())){
+                if(fillBlankPaper.getId().equals(paperRecordList.get(j).getPaperId())){
                     flag = true;
                     break;
                 }
