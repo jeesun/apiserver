@@ -147,4 +147,16 @@ public class CommentController {
 
         return resultMsg;
     }
+
+    @RequestMapping(value = "comments", method = RequestMethod.GET)
+    public ResultMsg getByUser(@RequestParam String access_token){
+        ResultMsg resultMsg = new ResultMsg();
+        AppUser currentUser = TokenUtil.getInstance().getAppUserByAccessToken(appUserRepository, jdbcTemplate, access_token);
+        List<Comment> comments = commentRepository.findByUserId(currentUser.getId());
+
+        resultMsg.setStatus(ResultMsg.Status.OK);
+        resultMsg.setData(comments);
+
+        return resultMsg;
+    }
 }
