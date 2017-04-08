@@ -15,7 +15,7 @@ public class Reply implements Comparable {
     //冗余字段，用来一次性找到一个评论下面的所有回复
     private String commentId;
 
-    private String replyId;
+    private String replyId;//当是对评论的回复时，replyId=commentId
 
     //表示回复的类型，因为回复可以是针对评论的回复(comment)，也可以是针对回复的回复(reply)， 通过这个字段来区分两种情景。
     private Integer replyType;//0针对评论的回复，1针对回复的回复
