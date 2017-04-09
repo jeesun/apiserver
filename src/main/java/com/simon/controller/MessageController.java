@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by simon on 2017/4/9.
@@ -48,6 +45,10 @@ public class MessageController {
         ResultMsg resultMsg = new ResultMsg();
         AppUser currentUser = TokenUtil.getInstance().getAppUserByAccessToken(appUserRepository, jdbcTemplate, access_token);
         List<Reply> replies = replyRepository.findByToUserId(currentUser.getId());
+        replies.sort((Reply o1, Reply o2) -> {
+            if(o1.getLastEditTime()<o2.getLastEditTime()) return 1;
+            return -1;
+        });
         List<Map<String, Object>> mapList = new ArrayList<>();
         for(int i=0; i<replies.size(); i++){
             Map<String, Object> map = new LinkedHashMap<>();
