@@ -138,6 +138,7 @@ public class CommentController {
         AppUser currentUser = TokenUtil.getInstance().getAppUserByAccessToken(appUserRepository, jdbcTemplate, access_token);
 
         Reply reply = new Reply();
+        reply.setQuestionId(questionId);
         reply.setCommentId(commentId);
         reply.setContent(content);
         reply.setReplyType(replyType);
