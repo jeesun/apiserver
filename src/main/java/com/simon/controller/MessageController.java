@@ -65,10 +65,12 @@ public class MessageController {
                 Comment comment = commentRepository.findOne(reply.getCommentId());
                 map.put("replyType", 0);
                 map.put("comment", comment);
+                map.put("questionId", reply.getQuestionId());
             }else if(1==reply.getReplyType()){
                 Reply replyReply = replyRepository.findOne(reply.getReplyId());
                 map.put("replyType", 1);
                 map.put("replyReply", replyReply);
+                map.put("questionId", reply.getQuestionId());
             }
             mapList.add(map);
         }

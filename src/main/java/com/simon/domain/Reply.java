@@ -12,6 +12,8 @@ public class Reply implements Comparable {
     @Id
     private String id;
 
+    private String questionId;
+
     //冗余字段，用来一次性找到一个评论下面的所有回复
     private String commentId;
 
@@ -40,6 +42,14 @@ public class Reply implements Comparable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
     }
 
     public String getCommentId() {

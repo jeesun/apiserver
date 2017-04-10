@@ -79,7 +79,7 @@ public class CommentController {
     }
 
     @RequestMapping(value = "/{questionId}/comments/{commentId}", method = RequestMethod.GET)
-    public ResultMsg getCommentAndRepliesByCommentId(@PathVariable String questionId, @PathVariable String commentId)  throws Exception{
+    public ResultMsg getCommentAndRepliesByCommentId(@PathVariable("questionId") String questionId, @PathVariable("commentId") String commentId)  throws Exception{
         ResultMsg resultMsg = new ResultMsg();
         Comment comment = commentRepository.findOne(commentId);
         //先找出所有的回复
