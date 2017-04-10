@@ -17,7 +17,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by simon on 2017/3/18.
@@ -76,6 +78,22 @@ public class CommentController {
         return resultMsg;
     }
 
+    @RequestMapping(value = "/{questionId}/comments/{commentId}", method = RequestMethod.GET)
+    public ResultMsg getCommentAndRepliesByCommentId(@PathVariable String questionId, @PathVariable String commentId)  throws Exception{
+        ResultMsg resultMsg = new ResultMsg();
+        Comment comment = commentRepository.findOne(commentId);
+        //先找出所有的回复
+        List<Reply> replies = replyRepository.findByCommentId(commentId);
+        Collections.sort(replies);//按照lastEditTime升序
+        //Collections.reverse(replies);//按照lastEditTime降序
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("comment", comment);
+        map.put("replies", replies);
+        resultMsg.setStatus(ResultMsg.Status.OK);
+        resultMsg.setData(map);
+        return resultMsg;
+    }
+
     /**
      * 获取所有的回复，包括对评论的回复和对回复的回复
      * @param questionId
@@ -83,7 +101,7 @@ public class CommentController {
      * @return
      */
     @RequestMapping(value = "/{questionId}/comments/{commentId}/replies", method = RequestMethod.GET)
-    public ResultMsg getByCommentId(@PathVariable String questionId,
+    public ResultMsg getRepliesByCommentId(@PathVariable String questionId,
                                     @PathVariable String commentId){
         ResultMsg resultMsg = new ResultMsg();
         //先找出所有的回复
