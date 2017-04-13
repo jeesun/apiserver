@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/api/appUsers")
 public class AppUserController {
     @Autowired
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
     @RequestMapping(value = "/api/hellos/ip", method = RequestMethod.GET)
     public String hello(){
