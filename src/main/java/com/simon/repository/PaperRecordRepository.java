@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface PaperRecordRepository extends MongoRepository<PaperRecord, String> {
     List<PaperRecord> findByUserId(String userId);
+    int countByUserId(String userId);
 }

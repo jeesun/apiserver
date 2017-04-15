@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface MultiRecordRepository extends MongoRepository<MultiRecord, String> {
     List<MultiRecord> findByUserId(String userId);
+    int countByUserId(String userId);
 }

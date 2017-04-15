@@ -11,4 +11,5 @@ import java.util.List;
 public interface SingleRecordRepository extends MongoRepository<SingleRecord, String> {
     List<SingleRecord> findByPaperId(String paperId);
     List<SingleRecord> findByUserId(String userId);
+    int countByUserId(String userId);
 }

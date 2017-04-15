@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface FillRecordRepository extends MongoRepository<FillBlankRecord, String> {
     List<FillBlankRecord> findByUserId(String userId);
+    int countByUserId(String userId);
 }
