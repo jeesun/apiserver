@@ -15,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,6 +75,8 @@ public class CollectController {
             collect.setUserId(appUser.getId());
             collectRepository.save(collect);
         }
+        resultMsg.setStatus(201);
+        resultMsg.setMessage("收藏成功");
 
         return resultMsg;
     }
@@ -120,4 +121,14 @@ public class CollectController {
         return resultMsg;
     }
 
+    @RequestMapping(value = "/user/{userId}/question/{questionId}", method = RequestMethod.DELETE)
+    public ResultMsg deleteByUserIdAndQuestionId(@PathVariable String userId,
+                                                 @PathVariable String questionId){
+        ResultMsg resultMsg = new ResultMsg();
+        collectRepository.deleteByUserIdAndQuestionId(userId, questionId);
+        resultMsg.setStatus(200);
+        resultMsg.setMessage("取消收藏成功");
+
+        return resultMsg;
+    }
 }
