@@ -69,12 +69,11 @@ public class CollectController {
         ResultMsg resultMsg = new ResultMsg();
         AppUser appUser = TokenUtil.getInstance().getAppUserByAccessToken(appUserRepository, jdbcTemplate, access_token);
 
-        List<Collect> collects = JSON.parseArray(json, Collect.class);
-        for(int i=0; i<collects.size(); i++){
-            Collect collect = collects.get(i);
-            collect.setUserId(appUser.getId());
-            collectRepository.save(collect);
-        }
+        Collect collect = JSON.parseObject(json, Collect.class);
+        collect.setUserId(appUser.getId());
+        collect.setLastEditTime(System.currentTimeMillis());
+        collectRepository.save(collect);
+
         resultMsg.setStatus(201);
         resultMsg.setMessage("收藏成功");
 
