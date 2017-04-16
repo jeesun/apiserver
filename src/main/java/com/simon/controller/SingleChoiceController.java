@@ -20,7 +20,7 @@ public class SingleChoiceController {
     @Autowired
     private SingleChoiceRepository singleChoiceRepository;
 
-    @RequestMapping(value = "{/id}", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResultMsg get(@PathVariable String id){
         ResultMsg resultMsg = new ResultMsg();
 
