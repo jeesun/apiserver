@@ -120,7 +120,8 @@ public class FillBlankPaperRecordController {
                 }
             }
         }
-
+        resultMsg.setStatus(200);
+        resultMsg.setData(result);
         return resultMsg;
     }
 }
