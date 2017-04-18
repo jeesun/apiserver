@@ -1,8 +1,10 @@
 package com.simon.domain;
 
+import com.simon.ObtainAnswer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,7 +12,7 @@ import java.util.List;
  */
 //填空题
 @Document(collection = "qb_fill_blank")
-public class FillBlank {
+public class FillBlank implements ObtainAnswer {
     @Id
     private String id;
 
@@ -84,5 +86,14 @@ public class FillBlank {
 
     public void setPaperId(String paperId) {
         this.paperId = paperId;
+    }
+
+    @Override
+    public Object getAnswer() {
+        List<String> answers = new ArrayList<>();
+        for(BlankItem blankItem : blankItems){
+            answers.add(blankItem.getAnswer());
+        }
+        return answers;
     }
 }

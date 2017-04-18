@@ -1,5 +1,6 @@
 package com.simon.domain;
 
+import com.simon.ObtainAnswer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,7 +12,7 @@ import java.util.List;
  */
 //多选题
 @Document(collection = "qb_multiple_choice")
-public class MultiChoice {
+public class MultiChoice implements ObtainAnswer {
     @Id
     private String id;
 
@@ -94,5 +95,16 @@ public class MultiChoice {
                 ", analysis='" + analysis + '\'' +
                 ", paperId='" + paperId + '\'' +
                 '}';
+    }
+
+    @Override
+    public Object getAnswer() {
+        List<Integer> answerIndex = new ArrayList<>();
+        for(ChoiceItem choiceItem : choiceItems){
+            if (choiceItem.isAnswer()){
+                answerIndex.add(choiceItems.indexOf(choiceItem));
+            }
+        }
+        return answerIndex;
     }
 }

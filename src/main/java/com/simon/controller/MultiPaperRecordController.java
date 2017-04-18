@@ -1,15 +1,20 @@
 package com.simon.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.simon.domain.MultiChoice;
 import com.simon.domain.MultiRecord;
 import com.simon.domain.PaperRecord;
 import com.simon.domain.ResultMsg;
 import com.simon.repository.*;
+import com.simon.util.PaperType;
 import com.simon.util.TokenUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +23,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/multiPaperRecords")
 public class MultiPaperRecordController {
+    private static final Logger LOG = LoggerFactory.getLogger(MultiPaperRecordController.class);
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -63,7 +70,7 @@ public class MultiPaperRecordController {
         return resultMsg;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "/wrong", method = RequestMethod.GET)
     public ResultMsg get(@RequestParam String access_token){
         ResultMsg resultMsg = new ResultMsg();
 
@@ -72,6 +79,43 @@ public class MultiPaperRecordController {
 
         resultMsg.setStatus(ResultMsg.Status.OK);
         resultMsg.setData(multiRecords);
+        return resultMsg;
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResultMsg getIncludeRight(@RequestParam String access_token){
+        ResultMsg resultMsg = new ResultMsg();
+        List<MultiRecord> result = new ArrayList<>();
+
+        String userId = TokenUtil.getInstance().getAppUserIdByAccessToken(appUserRepository, jdbcTemplate, access_token);
+
+        List<PaperRecord> paperRecords = paperRecordRepository.findByUserIdAndPaperType(userId, PaperType.MULTI_CHOICE);
+        LOG.warn("paperRecords.size()="+paperRecords.size());
+
+        for(PaperRecord paperRecord : paperRecords){
+            List<MultiRecord> multiRecords = multiRecordRepository.findByPaperId(paperRecord.getPaperId());
+            List<MultiChoice> multiChoices = multiChoiceRepository.findByPaperId(paperRecord.getPaperId());
+            for(int i=0; i<multiChoices.size(); i++){
+                MultiChoice multiChoice = multiChoices.get(i);
+                for(int j=0; j<multiRecords.size(); j++){
+                    MultiRecord multiRecord = multiRecords.get(j);
+                    if(multiChoice.getId().equals(multiRecord.getMultiChoiceId())){
+                        result.add(multiRecord);
+                        break;
+                    }else if(j==(multiRecords.size()-1)){
+                        MultiRecord correctRecord = new MultiRecord();
+                        correctRecord.setMultiChoice(multiChoice);
+                        correctRecord.setMultiChoiceId(multiChoice.getId());
+                        correctRecord.setPaperId(paperRecord.getPaperId());
+                        correctRecord.setResult(true);
+                        correctRecord.setUserId(userId);
+                        correctRecord.setUserChose((int[])multiChoice.getAnswer());
+                        result.add(correctRecord);
+                    }
+                }
+            }
+        }
+
         return resultMsg;
     }
 }

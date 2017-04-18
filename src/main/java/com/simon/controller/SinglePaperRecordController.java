@@ -3,16 +3,21 @@ package com.simon.controller;
 import com.alibaba.fastjson.JSON;
 import com.simon.domain.PaperRecord;
 import com.simon.domain.ResultMsg;
+import com.simon.domain.SingleChoice;
 import com.simon.domain.SingleRecord;
 import com.simon.repository.AppUserRepository;
 import com.simon.repository.PaperRecordRepository;
 import com.simon.repository.SingleChoiceRepository;
 import com.simon.repository.SingleRecordRepository;
+import com.simon.util.PaperType;
 import com.simon.util.TokenUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,6 +26,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/singlePaperRecords")
 public class SinglePaperRecordController {
+    private static final Logger LOG = LoggerFactory.getLogger(SinglePaperRecordController.class);
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -66,7 +73,7 @@ public class SinglePaperRecordController {
         return resultMsg;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "/wrong", method = RequestMethod.GET)
     public ResultMsg get(@RequestParam String access_token){
         ResultMsg resultMsg = new ResultMsg();
 
@@ -77,6 +84,48 @@ public class SinglePaperRecordController {
         resultMsg.setStatus(200);
         resultMsg.setData(singleRecords);
 
+        return resultMsg;
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResultMsg getIncludeRight(@RequestParam String access_token){
+        ResultMsg resultMsg = new ResultMsg();
+        List<SingleRecord> result = new ArrayList<>();
+
+        String userId = TokenUtil.getInstance().getAppUserIdByAccessToken(appUserRepository, jdbcTemplate, access_token);
+
+        List<PaperRecord> paperRecords = paperRecordRepository.findByUserIdAndPaperType(userId, PaperType.SINGLE_CHOICE);
+        LOG.warn("paperRecords.size()="+paperRecords.size());
+
+        for(PaperRecord paperRecord : paperRecords){
+            List<SingleRecord> singleRecords = singleRecordRepository.findByPaperId(paperRecord.getPaperId());
+            LOG.warn("singleRecords.size()="+singleRecords.size());
+            List<SingleChoice> singleChoices = singleChoiceRepository.findByPaperId(paperRecord.getPaperId());
+            LOG.warn("singleChoices.size()="+singleChoices.size());
+            for(int i=0; i<singleChoices.size(); i++){
+                SingleChoice singleChoice = singleChoices.get(i);
+
+                //对比singleChoice和singleRecord，如果id相同，存singleRecord；如果一轮比较没有id相同的，说明用户答对了。
+                for(int j=0; j<singleRecords.size(); j++){
+                    SingleRecord singleRecord = singleRecords.get(j);
+                    if(singleChoice.getId().equals(singleRecord.getSingleChoiceId())){
+                        result.add(singleRecords.get(j));
+                        break;
+                    }else if(j==(singleRecords.size()-1)){
+                        SingleRecord correctRecord = new SingleRecord();
+                        correctRecord.setSingleChoice(singleChoice);
+                        correctRecord.setPaperRecordId(paperRecord.getId());
+                        correctRecord.setPaperId(paperRecord.getPaperId());
+                        correctRecord.setResult(true);
+                        correctRecord.setUserId(userId);
+                        correctRecord.setUserChose((int)singleChoice.getAnswer());
+                        result.add(correctRecord);
+                    }
+                }
+            }
+        }
+        resultMsg.setStatus(200);
+        resultMsg.setData(result);
         return resultMsg;
     }
 }

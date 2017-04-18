@@ -1,16 +1,16 @@
 package com.simon.domain;
 
+import com.simon.ObtainAnswer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by simon on 2017/3/11.
  */
 @Document(collection = "qb_single_choice")
-public class SingleChoice {
+public class SingleChoice implements ObtainAnswer {
     @Id
     private String id;
 
@@ -70,5 +70,17 @@ public class SingleChoice {
 
     public void setPaperId(String paperId) {
         this.paperId = paperId;
+    }
+
+    @Override
+    public Object getAnswer() {
+        int index = -1;
+        for(ChoiceItem choiceItem : choiceItems){
+            if(choiceItem.isAnswer()){
+                index = choiceItems.indexOf(choiceItem);
+                break;
+            }
+        }
+        return index;
     }
 }
