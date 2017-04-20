@@ -5,6 +5,6 @@ package com.simon.exception;
  */
 public class NoCollectException extends Exception {
     public NoCollectException() {
-        super("没有消息");
+        super("您还没有收藏题目");
     }
 }
