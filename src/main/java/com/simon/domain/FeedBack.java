@@ -1,5 +1,6 @@
 package com.simon.domain;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -8,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "qb_feed_back")
 public class FeedBack {
+    @Id
     private String id;
     private String userId;
     private String content;
