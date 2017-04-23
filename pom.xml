@@ -117,7 +117,7 @@
 		<!-- swagger依赖end -->
 
 		<!-- ali dayu jar start -->
-		<dependency>
+		<!--<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>dayu</artifactId>
 			<version>1.0</version>
@@ -126,7 +126,7 @@
 			<groupId>com.alibaba</groupId>
 			<artifactId>dayu-source</artifactId>
 			<version>1.0</version>
-		</dependency>
+		</dependency>-->
 		<!-- ali dayu jar end -->
 
 		<dependency>
