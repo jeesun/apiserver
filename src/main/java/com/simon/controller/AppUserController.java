@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,9 +23,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/appUsers")
 public class AppUserController {
-    @Autowired
+    /*@Autowired
     private RestTemplate restTemplate;
-
+*/
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -51,11 +50,11 @@ public class AppUserController {
     @Autowired
     private DiscoveryClient discoveryClient;
 
-    @RequestMapping(value = "/api/hellos/ip", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/api/hellos/ip", method = RequestMethod.GET)
     public String hello(){
         String hello = restTemplate.getForObject("http://oauth/api/hellos/ip", String.class);
         return hello;
-    }
+    }*/
 
     @RequestMapping(value = "/instances", method = RequestMethod.GET)
     public List<ServiceInstance> serviceUrl() {
