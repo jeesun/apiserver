@@ -2,6 +2,7 @@ package com.simon.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import java.util.List;
  * Created by simon on 2017/3/5.
  */
 //填空题试卷
+@Document(collection = "qb_fill_blank_paper")
 public class FillBlankPaper {
     @Id
     private String id;
