@@ -12,6 +12,8 @@ import java.util.List;
 public interface CollectRepository extends MongoRepository<Collect, String> {
     List<Collect> getByUserId(String userId);
     List<Collect> getByUserId(String userId, Pageable pageable);
+    List<Collect> getByUserIdAndCourseId(String userId, String courseId);
+    List<Collect> getByUserIdAndCourseId(String userId, String courseId, Pageable pageable);
     int countByUserId(String userId);
     void deleteByUserIdAndQuestionId(String userId, String questionId);
 }

@@ -11,6 +11,7 @@ public class Collect {
     @Id
     private String id;
     private String userId;
+    private String courseId;
     private String paperId;
     private String questionId;
     private String question;
@@ -31,6 +32,14 @@ public class Collect {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 
     public String getPaperId() {

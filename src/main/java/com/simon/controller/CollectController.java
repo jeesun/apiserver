@@ -43,18 +43,35 @@ public class CollectController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResultMsg get(@RequestParam String access_token,
+                         @RequestParam(required = false) String courseId,
                          @RequestParam(required = false) Integer limit,
-                         @RequestParam(required = false) Integer offset) throws Exception{
+                         @RequestParam(required = false) Integer offset) throws NoCollectException{
         ResultMsg resultMsg = new ResultMsg();
         AppUser appUser = TokenUtil.getInstance().getAppUserByAccessToken(appUserRepository, jdbcTemplate, access_token);
 
-        List<Collect> collects;
+        List<Collect> collects = null;
         if(null!=limit && null!=offset){
-            collects = collectRepository.getByUserId(appUser.getId(), new PageRequest(offset/limit, limit, new Sort(Sort.Direction.DESC, "lastEditTime")));
+            if(null != courseId && !"".equals(courseId.trim())){
+                collects = collectRepository.getByUserIdAndCourseId(
+                        appUser.getId(),courseId,
+                        new PageRequest(
+                                offset/limit, limit,
+                                new Sort(Sort.Direction.DESC, "lastEditTime")));
+            }else{
+                collects = collectRepository.getByUserId(
+                        appUser.getId(),
+                        new PageRequest(
+                                offset/limit, limit,
+                                new Sort(Sort.Direction.DESC, "lastEditTime")));
+            }
         }else{
-            collects = collectRepository.getByUserId(appUser.getId());
+            if(null != courseId && !"".equals(courseId.trim())){
+                collects = collectRepository.getByUserIdAndCourseId(appUser.getId(),courseId);
+            }else{
+                collects = collectRepository.getByUserId(appUser.getId());
+            }
         }
-        if(collects.size()<=0){
+        if(null == collects || collects.size()<=0){
             throw new NoCollectException();
         }
         resultMsg.setStatus(200);
