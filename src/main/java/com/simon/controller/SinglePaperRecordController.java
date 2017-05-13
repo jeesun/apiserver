@@ -138,7 +138,7 @@ public class SinglePaperRecordController {
 
         List<PaperRecord> paperRecords = paperRecordRepository.findByUserIdAndPaperTypeAndCourseId(userId, PaperType.SINGLE_CHOICE, courseId);
 
-        if(paperRecords.size()<=0){
+        if(null == paperRecords || paperRecords.size()<=0){
             throw new NoPaperRecordException();
         }else{
             resultMsg.setStatus(200);

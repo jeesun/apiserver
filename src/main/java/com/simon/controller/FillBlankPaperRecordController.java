@@ -135,7 +135,7 @@ public class FillBlankPaperRecordController {
 
         List<PaperRecord> paperRecords = paperRecordRepository.findByUserIdAndPaperTypeAndCourseId(userId, PaperType.FILL_BLANK, courseId);
 
-        if(paperRecords.size()<=0){
+        if(null == paperRecords || paperRecords.size()<=0){
             throw new NoPaperRecordException();
         }else{
             resultMsg.setStatus(200);
