@@ -62,4 +62,14 @@ public class GlobalExceptionHandler {
         resultMsg.setMessage(e.getMessage());
         return resultMsg;
     }
+
+    @ExceptionHandler(value = NoPaperRecordException.class)
+    @ResponseBody
+    public ResultMsg noPaperRecord(HttpServletRequest request,
+                                   NoMsgException e) throws Exception{
+        ResultMsg resultMsg = new ResultMsg();
+        resultMsg.setStatus(404);
+        resultMsg.setMessage(e.getMessage());
+        return resultMsg;
+    }
 }

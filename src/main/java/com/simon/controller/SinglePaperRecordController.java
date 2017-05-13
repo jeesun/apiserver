@@ -5,6 +5,7 @@ import com.simon.domain.PaperRecord;
 import com.simon.domain.ResultMsg;
 import com.simon.domain.SingleChoice;
 import com.simon.domain.SingleRecord;
+import com.simon.exception.NoPaperRecordException;
 import com.simon.repository.AppUserRepository;
 import com.simon.repository.PaperRecordRepository;
 import com.simon.repository.SingleChoiceRepository;
@@ -45,6 +46,7 @@ public class SinglePaperRecordController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResultMsg post(@RequestParam String access_token,
+                          @RequestParam String courseId,
                           @RequestParam String paperId,
                           @RequestBody String records){
         ResultMsg resultMsg = new ResultMsg();
@@ -54,6 +56,7 @@ public class SinglePaperRecordController {
 
         PaperRecord paperRecord = new PaperRecord();
         paperRecord.setDoTime(0);
+        paperRecord.setCourseId(courseId);
         paperRecord.setPaperId(paperId);
         paperRecord.setPaperType(0);//单选题0，多选题1，填空题2，综合题3
         paperRecord.setUserId(userId);
@@ -74,7 +77,7 @@ public class SinglePaperRecordController {
     }
 
     @RequestMapping(value = "/wrong", method = RequestMethod.GET)
-    public ResultMsg get(@RequestParam String access_token){
+    public ResultMsg getWrong(@RequestParam String access_token){
         ResultMsg resultMsg = new ResultMsg();
 
         String userId = TokenUtil.getInstance().getAppUserIdByAccessToken(appUserRepository, jdbcTemplate, access_token);
@@ -87,45 +90,61 @@ public class SinglePaperRecordController {
         return resultMsg;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResultMsg getIncludeRight(@RequestParam String access_token){
+    @RequestMapping(value = "/{paperRecordId}/records", method = RequestMethod.GET)
+    public ResultMsg getIncludeRight(@RequestParam String access_token,
+                                     @PathVariable("paperRecordId") String paperRecordId){
         ResultMsg resultMsg = new ResultMsg();
         List<SingleRecord> result = new ArrayList<>();
 
         String userId = TokenUtil.getInstance().getAppUserIdByAccessToken(appUserRepository, jdbcTemplate, access_token);
 
-        List<PaperRecord> paperRecords = paperRecordRepository.findByUserIdAndPaperType(userId, PaperType.SINGLE_CHOICE);
-        LOG.warn("paperRecords.size()="+paperRecords.size());
+        PaperRecord paperRecord = paperRecordRepository.findOne(paperRecordId);
 
-        for(PaperRecord paperRecord : paperRecords){
-            List<SingleRecord> singleRecords = singleRecordRepository.findByPaperId(paperRecord.getPaperId());
-            LOG.warn("singleRecords.size()="+singleRecords.size());
-            List<SingleChoice> singleChoices = singleChoiceRepository.findByPaperId(paperRecord.getPaperId());
-            LOG.warn("singleChoices.size()="+singleChoices.size());
-            for(int i=0; i<singleChoices.size(); i++){
-                SingleChoice singleChoice = singleChoices.get(i);
+        List<SingleRecord> singleRecords = singleRecordRepository.findByPaperId(paperRecord.getPaperId());
+        LOG.warn("singleRecords.size()="+singleRecords.size());
+        List<SingleChoice> singleChoices = singleChoiceRepository.findByPaperId(paperRecord.getPaperId());
+        LOG.warn("singleChoices.size()="+singleChoices.size());
+        for(int i=0; i<singleChoices.size(); i++){
+            SingleChoice singleChoice = singleChoices.get(i);
 
-                //对比singleChoice和singleRecord，如果id相同，存singleRecord；如果一轮比较没有id相同的，说明用户答对了。
-                for(int j=0; j<singleRecords.size(); j++){
-                    SingleRecord singleRecord = singleRecords.get(j);
-                    if(singleChoice.getId().equals(singleRecord.getSingleChoiceId())){
-                        result.add(singleRecords.get(j));
-                        break;
-                    }else if(j==(singleRecords.size()-1)){
-                        SingleRecord correctRecord = new SingleRecord();
-                        correctRecord.setSingleChoice(singleChoice);
-                        correctRecord.setPaperRecordId(paperRecord.getId());
-                        correctRecord.setPaperId(paperRecord.getPaperId());
-                        correctRecord.setResult(true);
-                        correctRecord.setUserId(userId);
-                        correctRecord.setUserChose((int)singleChoice.getAnswer());
-                        result.add(correctRecord);
-                    }
+            //对比singleChoice和singleRecord，如果id相同，存singleRecord；如果一轮比较没有id相同的，说明用户答对了。
+            for(int j=0; j<singleRecords.size(); j++){
+                SingleRecord singleRecord = singleRecords.get(j);
+                if(singleChoice.getId().equals(singleRecord.getSingleChoiceId())){
+                    result.add(singleRecords.get(j));
+                    break;
+                }else if(j==(singleRecords.size()-1)){
+                    SingleRecord correctRecord = new SingleRecord();
+                    correctRecord.setSingleChoice(singleChoice);
+                    correctRecord.setPaperRecordId(paperRecord.getId());
+                    correctRecord.setPaperId(paperRecord.getPaperId());
+                    correctRecord.setResult(true);
+                    correctRecord.setUserId(userId);
+                    correctRecord.setUserChose((int)singleChoice.getAnswer());
+                    result.add(correctRecord);
                 }
             }
         }
         resultMsg.setStatus(200);
         resultMsg.setData(result);
+        return resultMsg;
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResultMsg get(@RequestParam String access_token, @RequestParam String courseId) throws NoPaperRecordException{
+        ResultMsg resultMsg = new ResultMsg();
+
+        String userId = TokenUtil.getInstance().getAppUserIdByAccessToken(appUserRepository, jdbcTemplate, access_token);
+
+        List<PaperRecord> paperRecords = paperRecordRepository.findByUserIdAndPaperTypeAndCourseId(userId, PaperType.SINGLE_CHOICE, courseId);
+
+        if(paperRecords.size()<=0){
+            throw new NoPaperRecordException();
+        }else{
+            resultMsg.setStatus(200);
+            resultMsg.setData(paperRecords);
+        }
+
         return resultMsg;
     }
 }

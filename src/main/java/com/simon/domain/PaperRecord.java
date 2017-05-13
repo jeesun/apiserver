@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class PaperRecord {
     @Id
     private String id;
+    private String courseId;
     private String paperId;
     private String userId;
     private Integer doTime;//做的次数（以后支持，目前不允许重复做题）
@@ -21,6 +22,14 @@ public class PaperRecord {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 
     public String getPaperId() {

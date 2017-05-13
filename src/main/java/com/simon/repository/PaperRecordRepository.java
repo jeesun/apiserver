@@ -12,4 +12,5 @@ public interface PaperRecordRepository extends MongoRepository<PaperRecord, Stri
     List<PaperRecord> findByUserId(String userId);
     int countByUserId(String userId);
     List<PaperRecord> findByUserIdAndPaperType(String userId, Integer paperType);
+    List<PaperRecord> findByUserIdAndPaperTypeAndCourseId(String userId, Integer paperType, String courseId);
 }
