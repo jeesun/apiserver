@@ -5,7 +5,11 @@ import com.simon.domain.MultiChoice;
 import com.simon.domain.MultiRecord;
 import com.simon.domain.PaperRecord;
 import com.simon.domain.ResultMsg;
-import com.simon.repository.*;
+import com.simon.exception.NoPaperRecordException;
+import com.simon.repository.AppUserRepository;
+import com.simon.repository.MultiChoiceRepository;
+import com.simon.repository.MultiRecordRepository;
+import com.simon.repository.PaperRecordRepository;
 import com.simon.util.PaperType;
 import com.simon.util.TokenUtil;
 import org.slf4j.Logger;
@@ -82,41 +86,57 @@ public class MultiPaperRecordController {
         return resultMsg;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResultMsg getIncludeRight(@RequestParam String access_token){
+    @RequestMapping(value = "/{paperRecordId}/records", method = RequestMethod.GET)
+    public ResultMsg getIncludeRight(@RequestParam String access_token,
+                                     @PathVariable("paperRecordId") String paperRecordId){
         ResultMsg resultMsg = new ResultMsg();
         List<MultiRecord> result = new ArrayList<>();
 
         String userId = TokenUtil.getInstance().getAppUserIdByAccessToken(appUserRepository, jdbcTemplate, access_token);
 
-        List<PaperRecord> paperRecords = paperRecordRepository.findByUserIdAndPaperType(userId, PaperType.MULTI_CHOICE);
-        LOG.warn("paperRecords.size()="+paperRecords.size());
+        PaperRecord paperRecord = paperRecordRepository.findOne(paperRecordId);
 
-        for(PaperRecord paperRecord : paperRecords){
-            List<MultiRecord> multiRecords = multiRecordRepository.findByPaperId(paperRecord.getPaperId());
-            List<MultiChoice> multiChoices = multiChoiceRepository.findByPaperId(paperRecord.getPaperId());
-            for(int i=0; i<multiChoices.size(); i++){
-                MultiChoice multiChoice = multiChoices.get(i);
-                for(int j=0; j<multiRecords.size(); j++){
-                    MultiRecord multiRecord = multiRecords.get(j);
-                    if(multiChoice.getId().equals(multiRecord.getMultiChoiceId())){
-                        result.add(multiRecord);
-                        break;
-                    }else if(j==(multiRecords.size()-1)){
-                        MultiRecord correctRecord = new MultiRecord();
-                        correctRecord.setMultiChoice(multiChoice);
-                        correctRecord.setMultiChoiceId(multiChoice.getId());
-                        correctRecord.setPaperId(paperRecord.getPaperId());
-                        correctRecord.setResult(true);
-                        correctRecord.setUserId(userId);
-                        correctRecord.setUserChose((int[])multiChoice.getAnswer());
-                        result.add(correctRecord);
-                    }
+        List<MultiRecord> multiRecords = multiRecordRepository.findByPaperId(paperRecord.getPaperId());
+        List<MultiChoice> multiChoices = multiChoiceRepository.findByPaperId(paperRecord.getPaperId());
+        for(int i=0; i<multiChoices.size(); i++){
+            MultiChoice multiChoice = multiChoices.get(i);
+            for(int j=0; j<multiRecords.size(); j++){
+                MultiRecord multiRecord = multiRecords.get(j);
+                if(multiChoice.getId().equals(multiRecord.getMultiChoiceId())){
+                    result.add(multiRecord);
+                    break;
+                }else if(j==(multiRecords.size()-1)){
+                    MultiRecord correctRecord = new MultiRecord();
+                    correctRecord.setMultiChoice(multiChoice);
+                    correctRecord.setMultiChoiceId(multiChoice.getId());
+                    correctRecord.setPaperId(paperRecord.getPaperId());
+                    correctRecord.setResult(true);
+                    correctRecord.setUserId(userId);
+                    correctRecord.setUserChose((int[])multiChoice.getAnswer());
+                    result.add(correctRecord);
                 }
             }
         }
         resultMsg.setStatus(200);
         resultMsg.setData(result);
+        return resultMsg;
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResultMsg get(@RequestParam String access_token, @RequestParam String courseId) throws NoPaperRecordException{
+        ResultMsg resultMsg = new ResultMsg();
+
+        String userId = TokenUtil.getInstance().getAppUserIdByAccessToken(appUserRepository, jdbcTemplate, access_token);
+
+        List<PaperRecord> paperRecords = paperRecordRepository.findByUserIdAndPaperTypeAndCourseId(userId, PaperType.MULTI_CHOICE, courseId);
+
+        if(paperRecords.size()<=0){
+            throw new NoPaperRecordException();
+        }else{
+            resultMsg.setStatus(200);
+            resultMsg.setData(paperRecords);
+        }
+
         return resultMsg;
     }
 }

@@ -5,7 +5,11 @@ import com.simon.domain.FillBlank;
 import com.simon.domain.FillBlankRecord;
 import com.simon.domain.PaperRecord;
 import com.simon.domain.ResultMsg;
-import com.simon.repository.*;
+import com.simon.exception.NoPaperRecordException;
+import com.simon.repository.AppUserRepository;
+import com.simon.repository.FillBlankRepository;
+import com.simon.repository.FillRecordRepository;
+import com.simon.repository.PaperRecordRepository;
 import com.simon.util.PaperType;
 import com.simon.util.TokenUtil;
 import org.slf4j.Logger;
@@ -82,46 +86,62 @@ public class FillBlankPaperRecordController {
         return resultMsg;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResultMsg getIncludeRight(@RequestParam String access_token){
+    @RequestMapping(value = "/{paperRecordId}/records", method = RequestMethod.GET)
+    public ResultMsg getIncludeRight(@RequestParam String access_token,
+                                     @PathVariable("paperRecordId") String paperRecordId){
         ResultMsg resultMsg = new ResultMsg();
         List<FillBlankRecord> result = new ArrayList<>();
 
         String userId = TokenUtil.getInstance().getAppUserIdByAccessToken(appUserRepository, jdbcTemplate, access_token);
 
-        List<PaperRecord> paperRecords = paperRecordRepository.findByUserIdAndPaperType(userId, PaperType.FILL_BLANK);
-        LOG.warn("paperRecords.size()="+paperRecords.size());
+        PaperRecord paperRecord = paperRecordRepository.findOne(paperRecordId);
 
-        for(PaperRecord paperRecord : paperRecords){
-            List<FillBlankRecord> fillBlankRecords = fillRecordRepository.findByPaperId(paperRecord.getPaperId());
-            List<FillBlank> fillBlanks = fillBlankRepository.findByPaperId(paperRecord.getPaperId());
-            for(int i=0; i<fillBlanks.size(); i++){
-                FillBlank fillBlank = fillBlanks.get(i);
-                for(int j=0; j<fillBlankRecords.size(); j++){
-                    FillBlankRecord record = fillBlankRecords.get(j);
-                    if(fillBlank.getId().equals(record.getFillBlankId())){
-                        result.add(record);
-                        break;
-                    }else if(j==(fillBlanks.size()-1)){
-                        FillBlankRecord correctRecord = new FillBlankRecord();
-                        correctRecord.setFillBlank(fillBlank);
-                        correctRecord.setPaperId(paperRecord.getPaperId());
-                        correctRecord.setFillBlankId(fillBlank.getId());
-                        Boolean recordResult[] = new Boolean[fillBlank.getBlankCount()];
-                        for(int k=0; k<fillBlank.getBlankCount(); k++){
-                            recordResult[k] = true;
-                        }
-                        correctRecord.setResult(recordResult);
-                        correctRecord.setUserId(userId);
-                        correctRecord.setUserFilled((String[])fillBlank.getAnswer());
-                        result.add(correctRecord);
+        List<FillBlankRecord> fillBlankRecords = fillRecordRepository.findByPaperId(paperRecord.getPaperId());
+        List<FillBlank> fillBlanks = fillBlankRepository.findByPaperId(paperRecord.getPaperId());
+        for(int i=0; i<fillBlanks.size(); i++){
+            FillBlank fillBlank = fillBlanks.get(i);
+            for(int j=0; j<fillBlankRecords.size(); j++){
+                FillBlankRecord record = fillBlankRecords.get(j);
+                if(fillBlank.getId().equals(record.getFillBlankId())){
+                    result.add(record);
+                    break;
+                }else if(j==(fillBlanks.size()-1)){
+                    FillBlankRecord correctRecord = new FillBlankRecord();
+                    correctRecord.setFillBlank(fillBlank);
+                    correctRecord.setPaperId(paperRecord.getPaperId());
+                    correctRecord.setFillBlankId(fillBlank.getId());
+                    Boolean recordResult[] = new Boolean[fillBlank.getBlankCount()];
+                    for(int k=0; k<fillBlank.getBlankCount(); k++){
+                        recordResult[k] = true;
                     }
-
+                    correctRecord.setResult(recordResult);
+                    correctRecord.setUserId(userId);
+                    correctRecord.setUserFilled((String[])fillBlank.getAnswer());
+                    result.add(correctRecord);
                 }
+
             }
         }
         resultMsg.setStatus(200);
         resultMsg.setData(result);
+        return resultMsg;
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public ResultMsg get(@RequestParam String access_token, @RequestParam String courseId) throws NoPaperRecordException {
+        ResultMsg resultMsg = new ResultMsg();
+
+        String userId = TokenUtil.getInstance().getAppUserIdByAccessToken(appUserRepository, jdbcTemplate, access_token);
+
+        List<PaperRecord> paperRecords = paperRecordRepository.findByUserIdAndPaperTypeAndCourseId(userId, PaperType.FILL_BLANK, courseId);
+
+        if(paperRecords.size()<=0){
+            throw new NoPaperRecordException();
+        }else{
+            resultMsg.setStatus(200);
+            resultMsg.setData(paperRecords);
+        }
+
         return resultMsg;
     }
 }
