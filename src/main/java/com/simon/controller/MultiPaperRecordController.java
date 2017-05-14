@@ -6,6 +6,7 @@ import com.simon.exception.NoPaperRecordException;
 import com.simon.repository.*;
 import com.simon.util.PaperType;
 import com.simon.util.TokenUtil;
+import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +87,7 @@ public class MultiPaperRecordController {
     }
 
     @RequestMapping(value = "/{paperRecordId}/records", method = RequestMethod.GET)
+    @SuppressWarnings("unchecked")
     public ResultMsg getIncludeRight(@RequestParam String access_token,
                                      @PathVariable("paperRecordId") String paperRecordId){
         ResultMsg resultMsg = new ResultMsg();
@@ -111,7 +113,8 @@ public class MultiPaperRecordController {
                     correctRecord.setPaperId(paperRecord.getPaperId());
                     correctRecord.setResult(true);
                     correctRecord.setUserId(userId);
-                    correctRecord.setUserChose((int[])multiChoice.getAnswer());
+                    correctRecord.setUserChose(
+                            ArrayUtils.toPrimitive(((List<Integer>)multiChoice.getAnswer()).toArray(new Integer[multiChoice.getAnswerCount()])));
                     result.add(correctRecord);
                 }
             }
