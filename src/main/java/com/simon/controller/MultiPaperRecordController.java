@@ -43,6 +43,7 @@ public class MultiPaperRecordController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResultMsg post(@RequestParam String access_token,
+                          @RequestParam String courseId,
                           @RequestParam String paperId,
                           @RequestBody String records){
         ResultMsg resultMsg = new ResultMsg();
@@ -52,6 +53,7 @@ public class MultiPaperRecordController {
 
         PaperRecord paperRecord = new PaperRecord();
         paperRecord.setDoTime(0);
+        paperRecord.setCourseId(courseId);
         paperRecord.setPaperId(paperId);
         paperRecord.setPaperType(1);//单选题0，多选题1，填空题2，综合题3
         paperRecord.setUserId(userId);
@@ -142,7 +144,7 @@ public class MultiPaperRecordController {
             }
         }
 
-        if(null == paperRecords || paperRecords.size()<=0){
+        if(paperRecords.size()<=0){
             throw new NoPaperRecordException();
         }else{
             resultMsg.setStatus(200);
