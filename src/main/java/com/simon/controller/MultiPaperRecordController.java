@@ -1,15 +1,9 @@
 package com.simon.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.simon.domain.MultiChoice;
-import com.simon.domain.MultiRecord;
-import com.simon.domain.PaperRecord;
-import com.simon.domain.ResultMsg;
+import com.simon.domain.*;
 import com.simon.exception.NoPaperRecordException;
-import com.simon.repository.AppUserRepository;
-import com.simon.repository.MultiChoiceRepository;
-import com.simon.repository.MultiRecordRepository;
-import com.simon.repository.PaperRecordRepository;
+import com.simon.repository.*;
 import com.simon.util.PaperType;
 import com.simon.util.TokenUtil;
 import org.slf4j.Logger;
@@ -43,6 +37,9 @@ public class MultiPaperRecordController {
 
     @Autowired
     private MultiRecordRepository multiRecordRepository;
+
+    @Autowired
+    private MultiPaperRepository multiPaperRepository;
 
     @RequestMapping(method = RequestMethod.POST)
     public ResultMsg post(@RequestParam String access_token,
@@ -129,12 +126,27 @@ public class MultiPaperRecordController {
         String userId = TokenUtil.getInstance().getAppUserIdByAccessToken(appUserRepository, jdbcTemplate, access_token);
 
         List<PaperRecord> paperRecords = paperRecordRepository.findByUserIdAndPaperTypeAndCourseId(userId, PaperType.MULTI_CHOICE, courseId);
+        List<MultiPaper> multiPapers = multiPaperRepository.findByBelongInfoCourseId(courseId);
+        List<DetailPaperRecord> detailPaperRecords = new ArrayList<>();
+
+        for(int i=0; i<paperRecords.size(); i++){
+            DetailPaperRecord record = new DetailPaperRecord();
+            record.setPaperRecord(paperRecords.get(i));
+            for(int j=0; j<multiPapers.size(); j++){
+                if(paperRecords.get(i).getPaperId().equals(multiPapers.get(j).getId())){
+                    record.setPaperName(multiPapers.get(j).getPaperName());
+                    record.setBelongInfo(multiPapers.get(j).getBelongInfo());
+                    detailPaperRecords.add(record);
+                    break;
+                }
+            }
+        }
 
         if(null == paperRecords || paperRecords.size()<=0){
             throw new NoPaperRecordException();
         }else{
             resultMsg.setStatus(200);
-            resultMsg.setData(paperRecords);
+            resultMsg.setData(detailPaperRecords);
         }
 
         return resultMsg;

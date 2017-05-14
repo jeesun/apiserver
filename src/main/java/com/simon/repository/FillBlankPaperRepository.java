@@ -12,4 +12,5 @@ public interface FillBlankPaperRepository extends MongoRepository<FillBlankPaper
     List<FillBlankPaper> findByBelongInfoCourseIdAndBelongInfoChapterIdAndBelongInfoSectionId(String courseId,
                                                                                               String chapterId,
                                                                                               String sectionId);
+    List<FillBlankPaper> findAllByBelongInfoCourseId(String courseId);
 }

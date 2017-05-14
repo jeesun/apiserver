@@ -1,15 +1,9 @@
 package com.simon.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.simon.domain.FillBlank;
-import com.simon.domain.FillBlankRecord;
-import com.simon.domain.PaperRecord;
-import com.simon.domain.ResultMsg;
+import com.simon.domain.*;
 import com.simon.exception.NoPaperRecordException;
-import com.simon.repository.AppUserRepository;
-import com.simon.repository.FillBlankRepository;
-import com.simon.repository.FillRecordRepository;
-import com.simon.repository.PaperRecordRepository;
+import com.simon.repository.*;
 import com.simon.util.PaperType;
 import com.simon.util.TokenUtil;
 import org.slf4j.Logger;
@@ -43,6 +37,9 @@ public class FillBlankPaperRecordController {
 
     @Autowired
     private FillRecordRepository fillRecordRepository;
+
+    @Autowired
+    private FillBlankPaperRepository fillBlankPaperRepository;
 
     @RequestMapping(method = RequestMethod.POST)
     public ResultMsg post(@RequestParam String access_token,
@@ -134,12 +131,25 @@ public class FillBlankPaperRecordController {
         String userId = TokenUtil.getInstance().getAppUserIdByAccessToken(appUserRepository, jdbcTemplate, access_token);
 
         List<PaperRecord> paperRecords = paperRecordRepository.findByUserIdAndPaperTypeAndCourseId(userId, PaperType.FILL_BLANK, courseId);
-
-        if(null == paperRecords || paperRecords.size()<=0){
+        List<FillBlankPaper> fillBlankPapers = fillBlankPaperRepository.findAllByBelongInfoCourseId(courseId);
+        List<DetailPaperRecord> detailPaperRecords = new ArrayList<>();
+        for(int i=0; i<paperRecords.size(); i++){
+            DetailPaperRecord record = new DetailPaperRecord();
+            record.setPaperRecord(paperRecords.get(i));
+            for(int j=0; j<fillBlankPapers.size(); j++){
+                if(paperRecords.get(i).getPaperId().equals(fillBlankPapers.get(j).getId())){
+                    record.setPaperName(fillBlankPapers.get(j).getPaperName());
+                    record.setBelongInfo(fillBlankPapers.get(j).getBelongInfo());
+                    detailPaperRecords.add(record);
+                    break;
+                }
+            }
+        }
+        if(paperRecords.size()<=0){
             throw new NoPaperRecordException();
         }else{
             resultMsg.setStatus(200);
-            resultMsg.setData(paperRecords);
+            resultMsg.setData(detailPaperRecords);
         }
 
         return resultMsg;

@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface MultiPaperRepository extends MongoRepository<MultiPaper, String> {
     List<MultiPaper> findByBelongInfoCourseIdAndBelongInfoChapterIdAndBelongInfoSectionId(String courseId, String chapterId, String sectionId);
+    List<MultiPaper> findByBelongInfoCourseId(String courseId);
 }
